@@ -1,6 +1,6 @@
 # Faltas Scraper Flutter
 
-Versão Flutter do aplicativo Faltas Scraper, migrado de um projeto Ionic/Angular.
+Aplicativo Flutter Faltas Scraper
 
 ## Sobre o Projeto
 
@@ -40,7 +40,3 @@ Antes de executar o aplicativo, certifique-se de atualizar a URL base da API no 
    ```
    flutter run
    ```
-
-## Migração do Ionic/Angular para Flutter
-
-Este projeto foi migrado de um aplicativo Ionic/Angular para Flutter, mantendo a mesma funcionalidade e estrutura lógica, mas adaptando para os padrões e práticas do Flutter.

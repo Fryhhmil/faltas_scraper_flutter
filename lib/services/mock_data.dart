@@ -16,38 +16,38 @@ class MockData {
   static final List<FaltaModel> mockFaltas = [
     FaltaModel(
       nomeMateria: 'Ciência de Dados',
-      faltas: 1, // 2 aulas faltadas
-      podeFaltar: 4, // 25% de 18 aulas (36 horas / 2) = 4.5 aulas, arredondando para 4
+      faltas: 1, 
+      podeFaltar: 4,
       percentual: double.parse(((2 / 36) * 100).toStringAsFixed(1)),
     ),
     FaltaModel(
       nomeMateria: 'Desenvolvimento Mobile',
-      faltas: 4, // 4 aulas faltadas
-      podeFaltar: 8, // 25% de 36 aulas (72 horas / 2) = 9 aulas
+      faltas: 4, 
+      podeFaltar: 8, 
       percentual: double.parse(((8 / 72) * 100).toStringAsFixed(1)),
     ),
     FaltaModel(
       nomeMateria: 'Análise e Projeto de Algoritmos',
-      faltas: 6, // 6 aulas faltadas
-      podeFaltar: 8, // 25% de 36 aulas (72 horas / 2) = 9 aulas
+      faltas: 6, 
+      podeFaltar: 8, 
       percentual: double.parse(((12 / 72) * 100).toStringAsFixed(1)),
     ),
     FaltaModel(
       nomeMateria: 'Redes',
-      faltas: 8, // 8 aulas faltadas
-      podeFaltar: 8, // 25% de 36 aulas (72 horas / 2) = 9 aulas
+      faltas: 8, 
+      podeFaltar: 8, 
       percentual: double.parse(((18 / 72) * 100).toStringAsFixed(1)),
     ),
     FaltaModel(
       nomeMateria: 'Inglês',
-      faltas: 0, // 0 aulas faltadas
-      podeFaltar: 4, // 25% de 18 aulas (36 horas / 2) = 4.5 aulas, arredondando para 4
+      faltas: 0, 
+      podeFaltar: 4, 
       percentual: double.parse(((0 / 36) * 100).toStringAsFixed(1)),
     ),
     FaltaModel(
       nomeMateria: 'Testes',
-      faltas: 3, // 3 aulas faltadas
-      podeFaltar: 4, // 25% de 18 aulas (36 horas / 2) = 4.5 aulas, arredondando para 4
+      faltas: 3, 
+      podeFaltar: 4, 
       percentual: double.parse(((8 / 36) * 100).toStringAsFixed(1)),
     ),
   ];
@@ -66,7 +66,6 @@ class MockData {
     materiasSexta: ['Ciência de Dados', 'Redes'],
   );
 
-  // Verifica se o login é válido
   static bool isValidLogin(LoginModel login) {
     return login.cpf == validLogin.cpf && login.senha == validLogin.senha;
   }
