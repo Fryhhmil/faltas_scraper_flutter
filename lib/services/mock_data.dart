@@ -6,7 +6,7 @@ class MockData {
   // Dados mockados para login
   static final LoginModel validLogin = LoginModel(
     cpf: '12345678900',
-    senha: 'senha123',
+    senha: '123',
   );
 
   // Cookie mockado
@@ -16,39 +16,39 @@ class MockData {
   static final List<FaltaModel> mockFaltas = [
     FaltaModel(
       nomeMateria: 'Ciência de Dados',
-      faltas: 2, // 2 aulas faltadas
+      faltas: 1, // 2 aulas faltadas
       podeFaltar: 4, // 25% de 18 aulas (36 horas / 2) = 4.5 aulas, arredondando para 4
-      percentual: 50.0, // (2/4) * 100 = 50.0%
+      percentual: double.parse(((2 / 36) * 100).toStringAsFixed(1)),
     ),
     FaltaModel(
       nomeMateria: 'Desenvolvimento Mobile',
       faltas: 4, // 4 aulas faltadas
-      podeFaltar: 9, // 25% de 36 aulas (72 horas / 2) = 9 aulas
-      percentual: 44.4, // (4/9) * 100 = 44.4%
+      podeFaltar: 8, // 25% de 36 aulas (72 horas / 2) = 9 aulas
+      percentual: double.parse(((8 / 72) * 100).toStringAsFixed(1)),
     ),
     FaltaModel(
       nomeMateria: 'Análise e Projeto de Algoritmos',
       faltas: 6, // 6 aulas faltadas
-      podeFaltar: 9, // 25% de 36 aulas (72 horas / 2) = 9 aulas
-      percentual: 66.7, // (6/9) * 100 = 66.7%
+      podeFaltar: 8, // 25% de 36 aulas (72 horas / 2) = 9 aulas
+      percentual: double.parse(((12 / 72) * 100).toStringAsFixed(1)),
     ),
     FaltaModel(
       nomeMateria: 'Redes',
       faltas: 8, // 8 aulas faltadas
-      podeFaltar: 9, // 25% de 36 aulas (72 horas / 2) = 9 aulas
-      percentual: 88.9, // (8/9) * 100 = 88.9%
+      podeFaltar: 8, // 25% de 36 aulas (72 horas / 2) = 9 aulas
+      percentual: double.parse(((18 / 72) * 100).toStringAsFixed(1)),
     ),
     FaltaModel(
       nomeMateria: 'Inglês',
       faltas: 0, // 0 aulas faltadas
       podeFaltar: 4, // 25% de 18 aulas (36 horas / 2) = 4.5 aulas, arredondando para 4
-      percentual: 0.0, // (0/4) * 100 = 0%
+      percentual: double.parse(((0 / 36) * 100).toStringAsFixed(1)),
     ),
     FaltaModel(
       nomeMateria: 'Testes',
       faltas: 3, // 3 aulas faltadas
       podeFaltar: 4, // 25% de 18 aulas (36 horas / 2) = 4.5 aulas, arredondando para 4
-      percentual: 75.0, // (3/4) * 100 = 75.0%
+      percentual: double.parse(((8 / 36) * 100).toStringAsFixed(1)),
     ),
   ];
 
