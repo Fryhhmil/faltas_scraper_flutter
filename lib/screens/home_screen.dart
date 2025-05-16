@@ -96,7 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 const Text(
-                  'Hoje',
+                  'Aulas de hoje',
                   style: TextStyle(
                     fontSize: 16,
                     color: Colors.grey,
@@ -138,23 +138,55 @@ class _HomeScreenState extends State<HomeScreen> {
                     style: TextStyle(fontSize: 16),
                   ),
                   const TextSpan(
-                    text: 'Faltas restantes: ',
+                    text: 'Faltas restantes por matéria do dia:',
                     style: TextStyle(
                       fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  TextSpan(
-                    text: faltasRestantes.toString(),
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.green,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ],
               ),
             ),
+            const SizedBox(height: 8),
+            if (dataProvider.getFaltasRestantesHoje().isNotEmpty)
+              ...dataProvider.getFaltasRestantesHoje().entries.map((entry) => 
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          '${entry.key}:',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                      Text(
+                        entry.value > 0 
+                          ? '${entry.value} faltas restantes' 
+                          : 'Não pode mais faltar',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: entry.value > 0 ? Colors.green : Colors.red,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            if (dataProvider.getFaltasRestantesHoje().isEmpty)
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 4),
+                child: Text(
+                  'Nenhuma falta registrada hoje',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey,
+                  ),
+                ),
+              )
           ],
         ),
       ),

@@ -4,14 +4,9 @@ import 'package:provider/provider.dart';
 import 'providers/auth_provider.dart';
 import 'providers/data_provider.dart';
 import 'routes.dart';
-import 'services/notification_service.dart';
 
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  
-  // Inicializa o serviço de notificações
-  final notificationService = NotificationService();
-  await notificationService.init();
   
   runApp(const MyApp());
 }

@@ -215,7 +215,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       label: const Text('Testar Notificações'),
                       onPressed: _settings?.notificacoesAtivas ?? false
                           ? () {
-                              NotificationService().mostrarNotificacaoTeste();
+                              _notificationService.mostrarNotificacaoTeste();
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   content: Text('Notificação de teste enviada!'),

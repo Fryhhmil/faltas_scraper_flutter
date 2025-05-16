@@ -41,3 +41,12 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Linux
+/build/linux
+*.deb
+
+# Lock files
+**/*.lock
+!pubspec.lock
+*.lock
