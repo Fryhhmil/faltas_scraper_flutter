@@ -111,34 +111,10 @@ class DataProvider with ChangeNotifier {
     return _horario!.getMateriasDoDia(hoje);
   }
   
-  Map<String, int> getFaltasRestantesHoje() {
-    if (_horario == null) return {};
-    
+  dynamic getFaltasRestantesHoje() {
+    if (_horario == null) return 'Indefinido';
+
     final hoje = DateTime.now().weekday;
-    final materiasDoDia = _horario!.getMateriasDoDia(hoje);
-    final materias = materiasDoDia.split(',').map((m) => m.trim()).toList();
-    
-    // Calcular faltas restantes por matéria
-    final faltasRestantesPorMateria = <String, int>{};
-    final materiasSemFaltas = <String>[];
-    
-    for (final falta in _faltas) {
-      if (materias.contains(falta.nomeMateria)) {
-        // Subtrair o número de faltas permitidas do total de faltas
-        final faltasRestantes = falta.podeFaltar - falta.faltas;
-        if (faltasRestantes > 0) {
-          faltasRestantesPorMateria[falta.nomeMateria] = faltasRestantes;
-        } else {
-          materiasSemFaltas.add(falta.nomeMateria);
-        }
-      }
-    }
-    
-    // Adicionar matérias sem faltas restantes com valor 0
-    for (final materia in materiasSemFaltas) {
-      faltasRestantesPorMateria[materia] = 0;
-    }
-    
-    return faltasRestantesPorMateria;
+    return _horario!.getFaltasRestantes(hoje);
   }
 }
