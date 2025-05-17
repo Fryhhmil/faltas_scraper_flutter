@@ -46,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
           // Botão de logout
           IconButton(
             icon: const Icon(Icons.logout),
-            onPressed: () => authProvider.logout(),
+            onPressed: () => _showLogoutConfirmationDialog(context, authProvider),
           ),
         ],
       ),
@@ -158,6 +158,34 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  // Mostra o diálogo de confirmação de logout
+  void _showLogoutConfirmationDialog(BuildContext context, AuthProvider authProvider) {
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: const Text('Confirmação'),
+          content: const Text('Tem certeza que deseja sair?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop(); // Fecha o diálogo
+              },
+              child: const Text('Cancelar'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop(); // Fecha o diálogo
+                authProvider.logout(); // Realiza o logout
+              },
+              child: const Text('Sair'),
+            ),
+          ],
+        );
+      },
     );
   }
 
