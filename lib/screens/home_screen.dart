@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/auth_provider.dart';
 import '../providers/data_provider.dart';
 import '../models/falta_model.dart';
 import 'settings_screen.dart';
@@ -24,7 +23,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = Provider.of<AuthProvider>(context);
     final dataProvider = Provider.of<DataProvider>(context);
 
     return Scaffold(
@@ -42,11 +40,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               );
             },
-          ),
-          // Botão de logout
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () => authProvider.logout(),
           ),
         ],
       ),
@@ -129,69 +122,58 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             const SizedBox(height: 8),
-            RichText(
-              text: TextSpan(
-                style: const TextStyle(color: Colors.black),
-                children: [
-                  const TextSpan(
-                    text: '🚫 ',
-                    style: TextStyle(fontSize: 16),
+            Row(
+              children: [
+                const Text(
+                  '❌ Faltas restantes hoje: ',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
                   ),
-                  const TextSpan(
-                    text: 'Faltas restantes por matéria do dia:',
-                    style: TextStyle(
+                ),
+                if (!(faltasRestantes is Map))
+                  Text(
+                    faltasRestantes.toString(),
+                    style: const TextStyle(
                       fontSize: 16,
+                      color: Colors.green,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                ],
-              ),
+              ],
             ),
             const SizedBox(height: 8),
-            if (dataProvider.getFaltasRestantesHoje().isNotEmpty)
-              ...dataProvider.getFaltasRestantesHoje().entries.map((entry) => 
+            if (faltasRestantes is Map)
+              for (var entry in faltasRestantes.entries)
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 4),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Expanded(
-                        child: Text(
-                          '${entry.key}:',
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
+                      Text(
+                        '${entry.key}:',
+                        style: const TextStyle(
+                          fontSize: 14,
                         ),
                       ),
                       Text(
-                        entry.value > 0 
-                          ? '${entry.value} faltas restantes' 
-                          : 'Não pode mais faltar',
-                        style: TextStyle(
+                        entry.value.toString(),
+                        style: const TextStyle(
                           fontSize: 14,
-                          color: entry.value > 0 ? Colors.green : Colors.red,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green,
                         ),
                       ),
                     ],
                   ),
-                ),
-              ),
-            if (dataProvider.getFaltasRestantesHoje().isEmpty)
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 4),
-                child: Text(
-                  'Nenhuma falta registrada hoje',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey,
-                  ),
-                ),
-              )
+                )
           ],
         ),
       ),
     );
   }
+
+
 
   Widget _buildFaltasTable(List<FaltaModel> faltas) {
     return Container(

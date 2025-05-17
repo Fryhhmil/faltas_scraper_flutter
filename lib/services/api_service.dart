@@ -6,7 +6,7 @@ import '../models/horario_model.dart';
 import 'api_interface.dart';
 
 class ApiService implements ApiInterface {
-  static const String baseUrl = 'https://seu-servidor-api.com'; // Substitua pela URL do seu backend
+  static const String baseUrl = 'http://totvsscrap.ddns.net:8080'; // Substitua pela URL do seu backend
 
   @override
   Future<String> login(LoginModel loginData) async {

@@ -10,7 +10,7 @@ class ApiFactory {
   ApiFactory._internal();
 
   // Flag para usar API mockada
-  bool _useMock = true;
+  bool _useMock = false;
 
   // Getter para a flag de mock
   bool get useMock => _useMock;

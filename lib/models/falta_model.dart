@@ -13,10 +13,10 @@ class FaltaModel {
 
   factory FaltaModel.fromJson(Map<String, dynamic> json) {
     return FaltaModel(
-      nomeMateria: json['nomeMateria'] as String,
-      faltas: json['faltas'] as int,
-      podeFaltar: json['podeFaltar'] as int,
-      percentual: json['percentual'] as double,
+      nomeMateria: json['nomeMateria'] as String? ?? 'Matéria não identificada',
+      faltas: json['faltas'] as int? ?? 0,
+      podeFaltar: json['podeFaltar'] as int? ?? 0,
+      percentual: (json['percentual'] as num?)?.toDouble() ?? 0.0,
     );
   }
 

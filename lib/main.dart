@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:device_preview/device_preview.dart';
 
 import 'providers/auth_provider.dart';
 import 'providers/data_provider.dart';
 import 'routes.dart';
 
 void main() {
-  runApp(
-    DevicePreview(
-      enabled: true,
-      builder: (context) => const MyApp(),
-    ),
-  );
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {

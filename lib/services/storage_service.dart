@@ -3,12 +3,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/login_model.dart';
 import '../models/falta_model.dart';
 import '../models/horario_model.dart';
+import '../models/notification_settings_model.dart';
 
 class StorageService {
   static const String _loginKey = 'login_data';
   static const String _cookieKey = 'cookie_data';
   static const String _faltasKey = 'faltas_data';
   static const String _horarioKey = 'horario_data';
+  static const String _notificationSettingsKey = 'notification_settings';
 
   // Login
   Future<void> saveLogin(LoginModel login) async {
@@ -86,6 +88,24 @@ class StorageService {
       return HorarioAlunoModel.fromJson(jsonDecode(horarioString));
     } catch (e) {
       return null;
+    }
+  }
+  
+  // Configurações de Notificação
+  Future<void> saveNotificationSettings(NotificationSettingsModel settings) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_notificationSettingsKey, jsonEncode(settings.toJson()));
+  }
+  
+  Future<NotificationSettingsModel> getNotificationSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    final settingsString = prefs.getString(_notificationSettingsKey);
+    if (settingsString == null) return NotificationSettingsModel.defaultSettings();
+    
+    try {
+      return NotificationSettingsModel.fromJson(jsonDecode(settingsString));
+    } catch (e) {
+      return NotificationSettingsModel.defaultSettings();
     }
   }
 }
