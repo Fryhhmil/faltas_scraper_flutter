@@ -118,6 +118,15 @@ class _LoginScreenState extends State<LoginScreen> {
                   return null;
                 },
               ),
+              const SizedBox(height: 8),
+              const Text(
+                'A senha é a mesma utilizada para acessar o TOTVS',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey,
+                ),
+              ),
+              const SizedBox(height: 16),
               const SizedBox(height: 24),
               SizedBox(
                 width: double.infinity,

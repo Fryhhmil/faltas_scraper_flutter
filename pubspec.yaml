@@ -29,6 +29,9 @@ dependencies:
   
   # Formatação
   intl: ^0.19.0
+  
+  # Device Preview
+  device_preview: ^1.0.1
 
 dev_dependencies:
   flutter_test:
