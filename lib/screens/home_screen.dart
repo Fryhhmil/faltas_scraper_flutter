@@ -56,6 +56,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     _buildTodayCard(dataProvider),
                     const SizedBox(height: 16),
                     _buildFaltasTable(dataProvider.faltas),
+                    const SizedBox(height: 16),
+                    _buildDisciplinasList(dataProvider),
                   ],
                 ),
               ),
@@ -174,6 +176,60 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
 
+
+  Widget _buildDisciplinasList(DataProvider dataProvider) {
+    final materias = dataProvider.getMaterias();
+    
+    if (materias.isEmpty) {
+      return const Center(
+        child: Text('Nenhuma matéria encontrada'),
+      );
+    }
+    
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: materias.length,
+      itemBuilder: (context, index) {
+        final materia = materias[index];
+        final falta = dataProvider.faltas.firstWhere(
+          (f) => f.nomeMateria == materia,
+          orElse: () => FaltaModel(
+            nomeMateria: materia,
+            faltas: 0,
+            podeFaltar: 0,
+            percentual: 0.0,
+          ),
+        );
+        final percentual = falta.percentual;
+        final statusColor = dataProvider.getStatusColor(percentual);
+        
+        return Card(
+          margin: const EdgeInsets.only(bottom: 8),
+          child: ListTile(
+            title: Text(materia),
+            subtitle: Text('${percentual.toStringAsFixed(1)}% de faltas'),
+            trailing: Container(
+              width: 100,
+              height: 8,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(4),
+                color: Colors.grey[200],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: LinearProgressIndicator(
+                  value: percentual / 100,
+                  backgroundColor: Colors.transparent,
+                  valueColor: AlwaysStoppedAnimation<Color>(statusColor),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   Widget _buildFaltasTable(List<FaltaModel> faltas) {
     return Container(

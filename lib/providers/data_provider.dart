@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import '../models/falta_model.dart';
 import '../models/horario_model.dart';
 import '../services/api_factory.dart';
@@ -80,6 +81,40 @@ class DataProvider with ChangeNotifier {
       _error = 'Erro ao buscar horário: ${e.toString()}';
       throw e;
     }
+  }
+  
+  // Calcula o percentual de faltas para uma matéria específica
+  double getPercentualFaltas(String materia) {
+    final falta = _faltas.firstWhere(
+      (f) => f.nomeMateria == materia,
+      orElse: () => FaltaModel(
+        nomeMateria: materia,
+        faltas: 0,
+        podeFaltar: 0,
+        percentual: 0.0,
+      ),
+    );
+    
+    return falta.percentual;
+  }
+  
+  // Retorna o status visual baseado no percentual de faltas
+  Color getStatusColor(double percentual) {
+    if (percentual <= 33) return Colors.green;
+    if (percentual <= 66) return Colors.orange;
+    return Colors.red;
+  }
+  
+  // Retorna todas as matérias únicas do horário
+  List<String> getMaterias() {
+    final todasMaterias = [
+      ...(_horario?.materiasSegunda ?? []).cast<String>(),
+      ...(_horario?.materiasTerca ?? []).cast<String>(),
+      ...(_horario?.materiasQuarta ?? []).cast<String>(),
+      ...(_horario?.materiasQuinta ?? []).cast<String>(),
+      ...(_horario?.materiasSexta ?? []).cast<String>(),
+    ];
+    return todasMaterias.toSet().toList();
   }
   
   String getDiaAtual() {
