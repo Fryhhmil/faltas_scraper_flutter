@@ -64,6 +64,17 @@ class DataProvider with ChangeNotifier {
   Future<void> _fetchFaltas(String cookie) async {
     try {
       final faltas = await apiService.buscarFaltas(cookie);
+      
+      // Log dos dados de faltas
+      print('\n=== Dados de Faltas ===');
+      for (var falta in faltas) {
+        print('Matéria: ${falta.nomeMateria}');
+        print('Faltas: ${falta.faltas}');
+        print('Pode Faltar: ${falta.podeFaltar}');
+        print('Percentual: ${falta.percentual}%');
+        print('------------------------');
+      }
+      
       _faltas = faltas;
       await _storageService.saveFaltas(faltas);
     } catch (e) {
@@ -75,6 +86,20 @@ class DataProvider with ChangeNotifier {
   Future<void> _fetchHorario(String cookie) async {
     try {
       final horario = await apiService.buscarHorario(cookie);
+      
+      // Log dos dados do horário
+      print('\n=== Dados do Horário ===');
+      print('Segunda-feira: ${horario.materiasSegunda.join(', ')}');
+      print('Pode faltar Segunda: ${horario.podefaltarSegunda}');
+      print('Terça-feira: ${horario.materiasTerca.join(', ')}');
+      print('Pode faltar Terça: ${horario.podefaltarTerca}');
+      print('Quarta-feira: ${horario.materiasQuarta.join(', ')}');
+      print('Pode faltar Quarta: ${horario.podefaltarQuarta}');
+      print('Quinta-feira: ${horario.materiasQuinta.join(', ')}');
+      print('Pode faltar Quinta: ${horario.podefaltarQuinta}');
+      print('Sexta-feira: ${horario.materiasSexta.join(', ')}');
+      print('Pode faltar Sexta: ${horario.podefaltarSexta}');
+      
       _horario = horario;
       await _storageService.saveHorario(horario);
     } catch (e) {

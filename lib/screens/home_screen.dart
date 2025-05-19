@@ -57,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SizedBox(height: 16),
                     _buildFaltasTable(dataProvider.faltas),
                     const SizedBox(height: 16),
-                    _buildDisciplinasList(dataProvider),
+                    _buildProgressBars(dataProvider.faltas),
                   ],
                 ),
               ),
@@ -146,48 +146,50 @@ class _HomeScreenState extends State<HomeScreen> {
             ] else ...[
               Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 8.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: const Text(
-                            'Matéria',
+                  if (faltasRestantes.isNotEmpty) ...[
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: const Text(
+                              'Matéria',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          const Text(
+                            'Faltas Restantes',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                        ),
-                        const Text(
-                          'Faltas Restantes',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  ...faltasRestantes.map((falta) => Padding(
-                    padding: const EdgeInsets.only(bottom: 8.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            '${falta['materia']}',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
+                    ...faltasRestantes.map((falta) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              '${falta['materia']}',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
-                        ),
-                        Text(
-                          'Restam ${falta['faltasRestantes']} de ${falta['podeFaltar']}',
-                          style: TextStyle(
-                            color: dataProvider.getStatusColor(falta['percentual']),
+                          Text(
+                            'Restam ${falta['faltasRestantes']} de ${falta['podeFaltar']}',
+                            style: TextStyle(
+                              color: dataProvider.getStatusColor(falta['percentual']),
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  )).toList(),
+                        ],
+                      ),
+                    )).toList(),
+                  ]
                 ],
               ),
             ]
@@ -199,61 +201,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
 
 
-  Widget _buildDisciplinasList(DataProvider dataProvider) {
-    final materias = dataProvider.getMaterias();
-    
-    if (materias.isEmpty) {
-      return const Center(
-        child: Text('Nenhuma matéria encontrada'),
-      );
-    }
-    
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: materias.length,
-      itemBuilder: (context, index) {
-        final materia = materias[index];
-        final falta = dataProvider.faltas.firstWhere(
-          (f) => f.nomeMateria == materia,
-          orElse: () => FaltaModel(
-            nomeMateria: materia,
-            faltas: 0,
-            podeFaltar: 0,
-            percentual: 0.0,
-          ),
-        );
-        final percentual = falta.percentual;
-        final statusColor = dataProvider.getStatusColor(percentual);
-        
-        return Card(
-          margin: const EdgeInsets.only(bottom: 8),
-          child: ListTile(
-            title: Text(materia),
-            subtitle: Text('${percentual.toStringAsFixed(1)}% de faltas'),
-            trailing: Container(
-              width: 100,
-              height: 8,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(4),
-                color: Colors.grey[200],
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(4),
-                child: LinearProgressIndicator(
-                  value: percentual / 100,
-                  backgroundColor: Colors.transparent,
-                  valueColor: AlwaysStoppedAnimation<Color>(statusColor),
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
+
 
   Widget _buildFaltasTable(List<FaltaModel> faltas) {
+    if (faltas.isEmpty) {
+      return const Center(
+        child: Text(
+          'Nenhuma falta registrada',
+          style: TextStyle(color: Colors.grey),
+        ),
+      );
+    }
+
     return Container(
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey.shade300),
@@ -261,118 +220,162 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       child: Column(
         children: [
+          // Cabeçalho
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 12),
+            padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor,
+              color: Colors.grey.shade100,
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(8),
                 topRight: Radius.circular(8),
               ),
             ),
-            child: Row(
-              children: const [
-                Expanded(
-                  flex: 3,
-                  child: Text(
-                    'Matéria',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Text(
-                    'Faltas',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Text(
-                    'Pode Faltar',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Text(
-                    'Percentual',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ],
+            child: const Text(
+              'Tabela de Faltas',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
-          if (faltas.isEmpty)
-            const Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Text('Nenhuma falta encontrada'),
-            )
-          else
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: faltas.length,
-              itemBuilder: (context, index) {
-                final falta = faltas[index];
-                return Container(
-                  decoration: BoxDecoration(
-                    border: Border(
-                      bottom: index < faltas.length - 1
-                          ? BorderSide(color: Colors.grey.shade300)
-                          : BorderSide.none,
+
+          // Tabela
+          ...faltas.map((falta) => Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(color: Colors.grey.shade300),
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 3,
+                      child: Text(
+                        falta.nomeMateria,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
                     ),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          flex: 3,
-                          child: Text(
-                            falta.nomeMateria,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        Expanded(
-                          child: Text(
-                            falta.faltas.toString(),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        Expanded(
-                          child: Text(
-                            falta.podeFaltar.toString(),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        Expanded(
-                          child: Text(
-                            '${falta.percentual}%',
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ],
+                    Expanded(
+                      child: Text(
+                        falta.faltas.toString(),
+                        textAlign: TextAlign.center,
+                      ),
                     ),
-                  ),
-                );
-              },
+                    Expanded(
+                      child: Text(
+                        falta.podeFaltar.toString(),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        '${falta.percentual.toStringAsFixed(1)}%',
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
+          )),
         ],
       ),
     );
+  }
+
+  Widget _buildProgressBars(List<FaltaModel> faltas) {
+    if (faltas.isEmpty) {
+      return const Center(
+        child: Text(
+          'Nenhuma falta registrada',
+          style: TextStyle(color: Colors.grey),
+        ),
+      );
+    }
+
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey.shade300),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        children: [
+          // Cabeçalho
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade100,
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(8),
+                topRight: Radius.circular(8),
+              ),
+            ),
+            child: const Text(
+              'Barras de Progresso',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+
+          // Barras de progresso
+          ...faltas.map((falta) => Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        falta.nomeMateria,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Faltas: ${falta.faltas} / Pode faltar: ${falta.podeFaltar}',
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Container(
+                  width: 100,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(4),
+                    color: Colors.grey[200],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(4),
+                    child: LinearProgressIndicator(
+                      value: falta.percentual / 100,
+                      backgroundColor: Colors.transparent,
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        _getColorForPercentage(falta.percentual),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Text('${falta.percentual.toStringAsFixed(1)}%'),
+              ],
+            ),
+          )),
+        ],
+      ),
+    );
+  }
+
+  Color _getColorForPercentage(double percentage) {
+    if (percentage <= 33) return Colors.green;
+    if (percentage <= 66) return Colors.orange;
+    return Colors.red;
   }
 }

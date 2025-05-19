@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:device_preview/device_preview.dart';
 
 import 'providers/auth_provider.dart';
 import 'providers/data_provider.dart';
@@ -8,7 +9,12 @@ import 'routes.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   
-  runApp(const MyApp());
+  runApp(
+    DevicePreview(
+      enabled: !const bool.fromEnvironment('dart.vm.product'),
+      builder: (context) => const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -41,6 +47,8 @@ class MyApp extends StatelessWidget {
             ),
             routerConfig: appRouter.router,
             debugShowCheckedModeBanner: false,
+            locale: DevicePreview.locale(context),
+            builder: (context, child) => child!,
           );
         },
       ),
