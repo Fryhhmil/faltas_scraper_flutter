@@ -429,7 +429,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(5),
                       child: LinearProgressIndicator(
-                        value: falta.percentual / 100,
+                        value: (falta.percentual >= 25) ? 1.0 : (falta.percentual / 25),
                         backgroundColor: Colors.transparent,
                         valueColor: AlwaysStoppedAnimation<Color>(
                           _getColorForPercentage(falta.percentual),
@@ -440,7 +440,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    '${falta.percentual.toStringAsFixed(1)}%',
+                    '${(falta.percentual >= 25 ? 100 : (falta.percentual / 25 * 100)).toStringAsFixed(1)}%',
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
@@ -456,8 +456,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Color _getColorForPercentage(double percentage) {
-    if (percentage >= 25) return Colors.red;          // ≥ 25% = Vermelho
-    if (percentage >= 10) return Colors.orange; // ≥ 10% = Laranja forte
-    return Colors.amber[600]!;                       // < 10% = Amarelo forte
+    if (percentage >= 25) return Colors.red;          
+    if (percentage >= 10) return Colors.orange; 
+    return Colors.amber[600]!;          
   }
 }
