@@ -62,6 +62,18 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
+  floatingActionButton: FloatingActionButton(
+    onPressed: () {
+      dataProvider.refreshData();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Atualizando dados...'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    },
+    child: const Icon(Icons.refresh),
+  ),
     );
   }
 
@@ -107,11 +119,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   const TextSpan(
                     text: '📚 ',
-                    style: TextStyle(fontSize: 16),
+                    style: const TextStyle(fontSize: 16),
                   ),
                   const TextSpan(
                     text: 'Matérias: ',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
@@ -124,51 +136,61 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             const SizedBox(height: 8),
-            Row(
-              children: [
-                const Text(
-                  '❌ Faltas restantes hoje: ',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
+            if (faltasRestantes.isEmpty) ...[
+              const Center(
+                child: Text(
+                  'Nenhuma matéria com aulas hoje',
+                  style: TextStyle(color: Colors.grey),
                 ),
-                if (!(faltasRestantes is Map))
-                  Text(
-                    faltasRestantes.toString(),
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.green,
-                      fontWeight: FontWeight.bold,
+              ),
+            ] else ...[
+              Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: const Text(
+                            'Matéria',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        const Text(
+                          'Faltas Restantes',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            if (faltasRestantes is Map)
-              for (var entry in faltasRestantes.entries)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        '${entry.key}:',
-                        style: const TextStyle(
-                          fontSize: 14,
+                  ...faltasRestantes.map((falta) => Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            '${falta['materia']}',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
-                      ),
-                      Text(
-                        entry.value.toString(),
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.green,
+                        Text(
+                          'Restam ${falta['faltasRestantes']} de ${falta['podeFaltar']}',
+                          style: TextStyle(
+                            color: dataProvider.getStatusColor(falta['percentual']),
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                )
+                      ],
+                    ),
+                  )).toList(),
+                ],
+              ),
+            ]
           ],
         ),
       ),
