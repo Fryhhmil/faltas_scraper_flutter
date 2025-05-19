@@ -213,72 +213,130 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     }
 
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade300),
-        borderRadius: BorderRadius.circular(8),
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
         children: [
-          // Cabeçalho
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.grey.shade100,
+              color: Theme.of(context).primaryColor.withOpacity(0.1),
               borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(8),
-                topRight: Radius.circular(8),
+                topLeft: Radius.circular(12),
+                topRight: Radius.circular(12),
               ),
             ),
-            child: const Text(
-              'Tabela de Faltas',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+            child: Row(
+              children: [
+                const Icon(Icons.school, color: Colors.blue),
+                const SizedBox(width: 8),
+                const Text(
+                  'Tabela de Faltas',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
           ),
 
-          // Tabela
+          // Cabeçalho da tabela
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: Text(
+                    'Matéria',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Text(
+                    'Faltas',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Text(
+                    'Restam',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Text(
+                    '%',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // Linha separadora
+          Container(
+            color: Colors.grey[200],
+            height: 1,
+            margin: const EdgeInsets.symmetric(horizontal: 16),
+          ),
+
+          // Linhas de dados
           ...faltas.map((falta) => Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Container(
               decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(color: Colors.grey.shade300),
-                ),
+                color: Colors.grey[50],
+                borderRadius: BorderRadius.circular(8),
               ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                child: Row(
-                  children: [
-                    Expanded(
-                      flex: 3,
-                      child: Text(
-                        falta.nomeMateria,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
+              padding: const EdgeInsets.all(8),
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: Text(
+                      falta.nomeMateria,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    Expanded(
-                      child: Text(
-                        falta.faltas.toString(),
-                        textAlign: TextAlign.center,
-                      ),
+                  ),
+                  Expanded(
+                    child: Text(
+                      falta.faltas.toString(),
+                      textAlign: TextAlign.center,
                     ),
-                    Expanded(
-                      child: Text(
-                        falta.podeFaltar.toString(),
-                        textAlign: TextAlign.center,
-                      ),
+                  ),
+                  Expanded(
+                    child: Text(
+                      falta.podeFaltar.toString(),
+                      textAlign: TextAlign.center,
                     ),
-                    Expanded(
-                      child: Text(
-                        '${falta.percentual.toStringAsFixed(1)}%',
-                        textAlign: TextAlign.center,
-                      ),
+                  ),
+                  Expanded(
+                    child: Text(
+                      '${falta.percentual.toStringAsFixed(1)}%',
+                      textAlign: TextAlign.center,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           )),
@@ -297,75 +355,99 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     }
 
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade300),
-        borderRadius: BorderRadius.circular(8),
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
         children: [
-          // Cabeçalho
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.grey.shade100,
+              color: Theme.of(context).primaryColor.withOpacity(0.1),
               borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(8),
-                topRight: Radius.circular(8),
+                topLeft: Radius.circular(12),
+                topRight: Radius.circular(12),
               ),
             ),
-            child: const Text(
-              'Barras de Progresso',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+            child: Row(
+              children: [
+                const Icon(Icons.bar_chart, color: Colors.blue),
+                const SizedBox(width: 8),
+                const Text(
+                  'Progresso das Faltas',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
+          ),
+
+          // Linhas separadoras
+          Container(
+            color: Colors.grey[200],
+            height: 1,
+            margin: const EdgeInsets.symmetric(horizontal: 16),
           ),
 
           // Barras de progresso
           ...faltas.map((falta) => Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        falta.nomeMateria,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'Faltas: ${falta.faltas} / Pode faltar: ${falta.podeFaltar}',
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                    ],
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.grey[50],
+                borderRadius: BorderRadius.circular(8),
+              ),
+              padding: const EdgeInsets.all(12),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          falta.nomeMateria,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(width: 16),
-                Container(
-                  width: 100,
-                  height: 8,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(4),
-                    color: Colors.grey[200],
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(4),
-                    child: LinearProgressIndicator(
-                      value: falta.percentual / 100,
-                      backgroundColor: Colors.transparent,
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        _getColorForPercentage(falta.percentual),
+                  const SizedBox(width: 16),
+                  Container(
+                    width: 100,
+                    height: 10,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      color: Colors.grey[200],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(5),
+                      child: LinearProgressIndicator(
+                        value: falta.percentual / 100,
+                        backgroundColor: Colors.transparent,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          _getColorForPercentage(falta.percentual),
+                        ),
+                        minHeight: 10,
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 8),
-                Text('${falta.percentual.toStringAsFixed(1)}%'),
-              ],
+                  const SizedBox(width: 8),
+                  Text(
+                    '${falta.percentual.toStringAsFixed(1)}%',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
             ),
           )),
         ],
@@ -374,8 +456,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Color _getColorForPercentage(double percentage) {
-    if (percentage <= 33) return Colors.green;
-    if (percentage <= 66) return Colors.orange;
-    return Colors.red;
+    if (percentage >= 25) return Colors.red;          // ≥ 25% = Vermelho
+    if (percentage >= 10) return Colors.orange; // ≥ 10% = Laranja forte
+    return Colors.amber[600]!;                       // < 10% = Amarelo forte
   }
 }
