@@ -15,8 +15,8 @@ class NotiService {
     if (_isInitialized) return; // evitar reinitialização
 
     tz.initializeTimeZones();
-    final String timeZone = await FlutterTimezone.getLocalTimezone();
-    tz.setLocalLocation(tz.getLocation(timeZone));
+    final String currentTimezone = await FlutterTimezone.getLocalTimezone();
+    tz.setLocalLocation(tz.getLocation(currentTimezone));
 
     // Inicializar Android
     const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -36,6 +36,7 @@ class NotiService {
 
     // Inicializar notificações
     await notificationsPlugin.initialize(settings);
+    _isInitialized = true;
   }
 
   // detalhes da notificação
@@ -78,7 +79,7 @@ class NotiService {
     final now = tz.TZDateTime.now(tz.local);
     
     // Hora da notificacao
-    final scheduledNotificationDateTime = tz.TZDateTime(
+    var scheduledNotificationDateTime = tz.TZDateTime(
       tz.local,
       now.year,
       now.month,
@@ -94,6 +95,8 @@ class NotiService {
       body,
       scheduledNotificationDateTime,
       notificationDetails(),
+
+      // Android
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
 
       //repetir

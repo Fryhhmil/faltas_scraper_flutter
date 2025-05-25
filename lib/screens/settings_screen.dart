@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import '../services/mock_data.dart';
-import '../services/notification_service.dart';
+// import '../services/notification_service.dart'; // Removido
 import '../services/storage_service.dart';
 import '../models/notification_settings_model.dart';
 
@@ -16,7 +16,7 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   final StorageService _storageService = StorageService();
-  final NotificationService _notificationService = NotificationService();
+  final NotiService _notiService = NotiService();
   
   NotificationSettingsModel? _settings;
   bool _isLoading = true;
@@ -38,7 +38,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Future<void> _saveSettings() async {
     if (_settings != null) {
       await _storageService.saveNotificationSettings(_settings!);
-      await _notificationService.reconfigurarNotificacoes();
+      await _notiService.cancelAllNotifications();
+      
+      // Configurar notificações apenas se estiverem ativas
+      if (_settings!.notificacoesAtivas) {
+        // Configurar notificação de lembrete
+        await _notiService.scheduleNotification(
+          id: 1,
+          title: 'Lembrete de Faltas',
+          body: 'Não se esqueça de verificar suas faltas hoje!',
+          hora: _settings!.lembreteHora,
+          minuto: _settings!.lembreteMinuto,
+        );
+        
+        // Configurar notificação de atualização
+        await _notiService.scheduleNotification(
+          id: 2,
+          title: 'Atualização de Faltas',
+          body: 'Suas faltas foram atualizadas automaticamente!',
+          hora: _settings!.atualizacaoHora,
+          minuto: _settings!.atualizacaoMinuto,
+        );
+      }
       
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -216,11 +237,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       label: const Text('Testar Notificações'),
                       onPressed: _settings?.notificacoesAtivas ?? false
                           ? () {
-                              _notificationService.mostrarNotificacaoTeste();
-                              NotiService().showNotifications(
-                                title: 'Teste de Notificação AOAVAS',
-                                body: 'Esta é uma notificação de teste.',
+                              _notiService.showNotifications(
+                                title: 'Aviso de Faltas',
+                                body: 'Atenção! Hoje você pode faltar mais 1 vez na aula de Desenvolvimento Mobile.',
                               );
+
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   content: Text('Notificação de teste enviada!'),
