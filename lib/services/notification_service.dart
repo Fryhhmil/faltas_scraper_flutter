@@ -31,7 +31,7 @@ class NotificationService {
     // Inicializa as notificações locais
     final InitializationSettings initializationSettings;
     
-    if (!kIsWeb && Platform.isAndroid) {
+    if (1==1) { //!kIsWeb && Platform.isAndroid
       const AndroidInitializationSettings initializationSettingsAndroid =
           AndroidInitializationSettings('@mipmap/ic_launcher');
       initializationSettings = const InitializationSettings(
@@ -47,7 +47,7 @@ class NotificationService {
     );
 
     // Só configura alarmes no Android
-    if (!kIsWeb && Platform.isAndroid) {
+    if (1==1) { //!kIsWeb && Platform.isAndroid
       // Inicializa o gerenciador de alarmes
       await AndroidAlarmManager.initialize();
 
@@ -201,11 +201,12 @@ class NotificationService {
 
   // Método para mostrar notificação imediatamente (para testes)
   Future<void> mostrarNotificacaoTeste() async {
-    if (!kIsWeb && (Platform.isAndroid || Platform.isIOS || Platform.isMacOS)) {
+    if (1==1) { //!kIsWeb && (Platform.isAndroid || Platform.isIOS || Platform.isMacOS)) {
       await _mostrarNotificacao(
         'Teste de Notificação',
         'Esta é uma notificação de teste.',
       );
+      print('FOI.');
     } else {
       // Em plataformas não suportadas, apenas imprime no console
       print('Notificação de teste (plataforma não suportada): Esta é uma notificação de teste.');

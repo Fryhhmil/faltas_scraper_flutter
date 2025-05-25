@@ -1,3 +1,4 @@
+import 'package:faltas_scraper_flutter/services/noti_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
@@ -216,6 +217,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       onPressed: _settings?.notificacoesAtivas ?? false
                           ? () {
                               _notificationService.mostrarNotificacaoTeste();
+                              NotiService().showNotifications(
+                                title: 'Teste de Notificação AOAVAS',
+                                body: 'Esta é uma notificação de teste.',
+                              );
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   content: Text('Notificação de teste enviada!'),

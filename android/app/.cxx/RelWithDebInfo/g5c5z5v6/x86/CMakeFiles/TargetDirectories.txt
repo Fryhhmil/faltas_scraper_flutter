@@ -1,0 +1,2 @@
+C:/Users/fryhh/Desktop/documentacoes/faltas_scraper_flutter/android/app/.cxx/RelWithDebInfo/g5c5z5v6/x86/CMakeFiles/edit_cache.dir
+C:/Users/fryhh/Desktop/documentacoes/faltas_scraper_flutter/android/app/.cxx/RelWithDebInfo/g5c5z5v6/x86/CMakeFiles/rebuild_cache.dir

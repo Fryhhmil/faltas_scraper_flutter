@@ -1,3 +1,5 @@
+import 'package:faltas_scraper_flutter/services/noti_service.dart';
+import 'package:faltas_scraper_flutter/services/notification_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:device_preview/device_preview.dart';
@@ -8,6 +10,10 @@ import 'routes.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+
+  NotificationService().init();
+
+  NotiService().initNotificarions();
   
   runApp(
     DevicePreview(
