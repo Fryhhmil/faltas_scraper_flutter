@@ -51,6 +51,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
           minuto: _settings!.lembreteMinuto,
         );
         
+        // Configurar notificação de faltas disponíveis
+        await _notiService.scheduleFaltasDisponiveisNotification(
+          hora: _settings!.lembreteHora,
+          minuto: _settings!.lembreteMinuto,
+        );
+        
+        // Mostrar notificação de faltas disponíveis imediatamente
+        await _notiService.showFaltasDisponiveisNotification();
+        
         // Configurar notificação de atualização
         await _notiService.scheduleNotification(
           id: 2,

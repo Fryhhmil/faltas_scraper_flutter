@@ -210,4 +210,16 @@ class DataProvider with ChangeNotifier {
     
     return faltasRestantes;
   }
+  
+  // Retorna quantas faltas o usuário pode ter hoje
+  int getPodeFaltarHoje() {
+    if (_horario == null) return 0;
+    
+    final hoje = DateTime.now().weekday;
+    
+    // Sábado (6) e Domingo (7) não têm aulas
+    if (hoje > 5) return 0;
+    
+    return _horario!.getFaltasRestantes(hoje);
+  }
 }

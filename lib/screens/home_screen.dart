@@ -81,6 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final diaHoje = dataProvider.getDiaAtual();
     final materiasHoje = dataProvider.getMateriasHoje();
     final faltasRestantes = dataProvider.getFaltasRestantesHoje();
+    final podeFaltarHoje = dataProvider.getPodeFaltarHoje();
 
     return Card(
       elevation: 4,
@@ -136,61 +137,37 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             const SizedBox(height: 8),
+            RichText(
+              text: TextSpan(
+                style: const TextStyle(color: Colors.black),
+                children: [
+                  const TextSpan(
+                    text: '📊 ',
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                  const TextSpan(
+                    text: 'Pode faltar hoje: ',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  TextSpan(
+                    text: DateTime.now().weekday > 5 
+                        ? 'Sem aulas hoje (fim de semana)'
+                        : podeFaltarHoje.toString(),
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
             if (faltasRestantes.isEmpty) ...[
               const Center(
                 child: Text(
                   'Nenhuma matéria com aulas hoje',
                   style: TextStyle(color: Colors.grey),
                 ),
-              ),
-            ] else ...[
-              Column(
-                children: [
-                  if (faltasRestantes.isNotEmpty) ...[
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 8.0),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: const Text(
-                              'Matéria',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          const Text(
-                            'Faltas Restantes',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    ...faltasRestantes.map((falta) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8.0),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              '${falta['materia']}',
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          Text(
-                            'Restam ${falta['faltasRestantes']} de ${falta['podeFaltar']}',
-                            style: TextStyle(
-                              color: dataProvider.getStatusColor(falta['percentual']),
-                            ),
-                          ),
-                        ],
-                      ),
-                    )).toList(),
-                  ]
-                ],
               ),
             ]
           ],
@@ -279,16 +256,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                 ),
-                Expanded(
-                  child: Text(
-                    '%',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                ),
               ],
             ),
           ),
@@ -308,32 +275,31 @@ class _HomeScreenState extends State<HomeScreen> {
                 color: Colors.grey[50],
                 borderRadius: BorderRadius.circular(8),
               ),
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(12),
               child: Row(
                 children: [
                   Expanded(
                     flex: 3,
                     child: Text(
                       falta.nomeMateria,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
                     ),
                   ),
                   Expanded(
                     child: Text(
                       falta.faltas.toString(),
                       textAlign: TextAlign.center,
+                      style: const TextStyle(fontSize: 14),
                     ),
                   ),
                   Expanded(
                     child: Text(
                       falta.podeFaltar.toString(),
                       textAlign: TextAlign.center,
-                    ),
-                  ),
-                  Expanded(
-                    child: Text(
-                      '${falta.percentual.toStringAsFixed(1)}%',
-                      textAlign: TextAlign.center,
+                      style: const TextStyle(fontSize: 14),
                     ),
                   ),
                 ],
@@ -410,9 +376,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         Text(
                           falta.nomeMateria,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
+                            color: falta.percentual >= 25 ? Colors.red : Colors.black,
                           ),
                         ),
                       ],
@@ -429,7 +396,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(5),
                       child: LinearProgressIndicator(
-                        value: (falta.percentual >= 25) ? 1.0 : (falta.percentual / 25),
+                        value: falta.percentual >= 25 ? 1.0 : falta.percentual / 25,
                         backgroundColor: Colors.transparent,
                         valueColor: AlwaysStoppedAnimation<Color>(
                           _getColorForPercentage(falta.percentual),
@@ -440,7 +407,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    '${(falta.percentual >= 25 ? 100 : (falta.percentual / 25 * 100)).toStringAsFixed(1)}%',
+                    '${falta.percentual.toStringAsFixed(1)}%',
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
@@ -456,8 +423,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Color _getColorForPercentage(double percentage) {
+    // 25% ou mais já é vermelho pois indica reprovação
     if (percentage >= 25) return Colors.red;          
-    if (percentage >= 10) return Colors.orange; 
-    return Colors.amber[600]!;          
+    if (percentage >= 15) return Colors.orange; 
+    if (percentage >= 10) return Colors.amber[600]!;
+    return Colors.green;          
   }
 }

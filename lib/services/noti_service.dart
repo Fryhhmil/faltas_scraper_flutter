@@ -2,6 +2,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:flutter_timezone/flutter_timezone.dart';
+import 'storage_service.dart';
 
 class NotiService {
   final notificationsPlugin = FlutterLocalNotificationsPlugin();
@@ -114,4 +115,78 @@ class NotiService {
     await notificationsPlugin.cancelAll();
   }
 
-} 
+  // Criar e agendar notificação de lembrete de faltas disponíveis
+  Future<void> scheduleFaltasDisponiveisNotification({
+    int id = 2,
+    required int hora,
+    required int minuto,
+  }) async {
+    final storageService = StorageService();
+    final horario = await storageService.getHorario();
+    
+    if (horario == null) return;
+    
+    // Pegar hora atual
+    final now = tz.TZDateTime.now(tz.local);
+    
+    // Hora da notificacao
+    var scheduledNotificationDateTime = tz.TZDateTime(
+      tz.local,
+      now.year,
+      now.month,
+      now.day,
+      hora,
+      minuto,
+    );
+    
+    // Se o horário já passou hoje, agenda para amanhã
+    if (now.isAfter(scheduledNotificationDateTime)) {
+      scheduledNotificationDateTime = scheduledNotificationDateTime.add(const Duration(days: 1));
+    }
+    
+    // Schedule notification com verificação diária
+    await notificationsPlugin.zonedSchedule(
+      id,
+      'Lembrete de Faltas Disponíveis',
+      'Verificando faltas disponíveis para hoje...',
+      scheduledNotificationDateTime,
+      notificationDetails(),
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      matchDateTimeComponents: DateTimeComponents.time,
+      payload: 'check_faltas_disponiveis',
+    );
+  }
+
+  // Mostrar notificação de faltas disponíveis para o dia atual
+  Future<void> showFaltasDisponiveisNotification() async {
+    final storageService = StorageService();
+    final horario = await storageService.getHorario();
+    
+    if (horario == null) return;
+    
+    final hoje = DateTime.now().weekday;
+    
+    // Se for fim de semana, não envia notificação
+    if (hoje > 5) return;
+    
+    final podeFaltarHoje = horario.getFaltasRestantes(hoje);
+    final materias = horario.getMateriasDoDia(hoje);
+    
+    // Texto personalizado para o lembrete de faltas
+    String mensagem;
+    if (podeFaltarHoje == 0) {
+      mensagem = '⚠️ Atenção! Você não pode faltar hoje nas aulas de $materias.';
+    } else if (podeFaltarHoje == 1) {
+      mensagem = '📚 Lembrete: Você só pode faltar mais 1 vez hoje nas aulas de $materias. Aproveite bem sua presença!';
+    } else {
+      mensagem = '📚 Lembrete: Você pode faltar até $podeFaltarHoje vezes hoje nas aulas de $materias.';
+    }
+    
+    // Mostrar notificação
+    await showNotifications(
+      id: 3,
+      title: 'Lembrete de Faltas Disponíveis',
+      body: mensagem,
+    );
+  }
+}

@@ -160,13 +160,29 @@ class NotificationService {
 
       if (horario != null) {
         final hoje = DateTime.now().weekday;
-        final faltasRestantes = horario.getFaltasRestantes(hoje);
+        
+        // Se for fim de semana, não envia notificação
+        if (hoje > 5) {
+          return;
+        }
+        
+        final podeFaltarHoje = horario.getFaltasRestantes(hoje);
         final materias = horario.getMateriasDoDia(hoje);
+        
+        // Texto personalizado para o lembrete de faltas
+        String mensagem;
+        if (podeFaltarHoje == 0) {
+          mensagem = '⚠️ Atenção! Você não pode faltar hoje nas aulas de $materias.';
+        } else if (podeFaltarHoje == 1) {
+          mensagem = '📚 Lembrete: Você só pode faltar mais 1 vez hoje nas aulas de $materias. Aproveite bem sua presença!';
+        } else {
+          mensagem = '📚 Lembrete: Você pode faltar até $podeFaltarHoje vezes hoje nas aulas de $materias.';
+        }
 
         // Envia uma notificação com as informações do dia
         await _mostrarNotificacao(
-          'Aulas de Hoje',
-          'Você tem aulas de $materias hoje e pode faltar $faltasRestantes vezes.',
+          'Lembrete de Faltas Disponíveis',
+          mensagem,
         );
       }
     } catch (e) {
