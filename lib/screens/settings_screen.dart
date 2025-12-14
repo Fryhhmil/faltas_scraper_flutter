@@ -15,7 +15,7 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   final StorageService _storageService = StorageService();
-  final NotificationService _notificationService = NotificationService();
+  // final NotificationService _notificationService = NotificationService();
   
   NotificationSettingsModel? _settings;
   bool _isLoading = true;
@@ -37,7 +37,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Future<void> _saveSettings() async {
     if (_settings != null) {
       await _storageService.saveNotificationSettings(_settings!);
-      await _notificationService.reconfigurarNotificacoes();
+      // await _notificationService.reconfigurarNotificacoes();
       
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -215,7 +215,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       label: const Text('Testar Notificações'),
                       onPressed: _settings?.notificacoesAtivas ?? false
                           ? () {
-                              _notificationService.mostrarNotificacaoTeste();
+                              // _notificationService.mostrarNotificacaoTeste();
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   content: Text('Notificação de teste enviada!'),

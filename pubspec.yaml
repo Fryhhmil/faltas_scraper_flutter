@@ -28,10 +28,9 @@ dependencies:
   go_router: ^13.2.0
   
   # Formatação
-  intl: ^0.19.0
+  intl: 0.20.2
   
   # Notificações e agendamento
-  flutter_local_notifications: ^19.2.0
   android_alarm_manager_plus: ^4.0.7
   timezone: ^0.10.1
   
