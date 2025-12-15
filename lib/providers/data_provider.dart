@@ -41,16 +41,25 @@ class DataProvider with ChangeNotifier {
     notifyListeners();
     
     try {      
-      final cookie = await _authProvider.getCookie();
+      // Evita travar aguardando longos processos de autenticação/contexto
+      print('[DataProvider] solicitando cookie (timeout 6s)');
+      String? cookie;
+      try {
+        cookie = await _authProvider.getCookie().timeout(const Duration(seconds: 6));
+      } catch (e) {
+        print('[DataProvider] getCookie timeout/error: $e');
+        cookie = null;
+      }
+
       if (cookie == null) {
-        _error = 'Não foi possível obter o cookie. Faça login novamente.';
+        _error = 'Não foi possível obter o cookie. Faça login/seleção de contexto.';
         _isLoading = false;
         notifyListeners();
         return;
       }
       
       await _fetchFaltas(cookie);
-      await _fetchHorario(cookie);
+      // await _fetchHorario(cookie);
       
       _isLoading = false;
       notifyListeners();

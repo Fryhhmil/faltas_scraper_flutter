@@ -4,6 +4,7 @@ import '../models/login_model.dart';
 import '../models/falta_model.dart';
 import '../models/horario_model.dart';
 import '../models/notification_settings_model.dart';
+import '../models/contexto_aluno.dart';
 
 class StorageService {
   static const String _loginKey = 'login_data';
@@ -11,6 +12,7 @@ class StorageService {
   static const String _faltasKey = 'faltas_data';
   static const String _horarioKey = 'horario_data';
   static const String _notificationSettingsKey = 'notification_settings';
+  static const String _selectedContextKey = 'selected_context';
 
   // Login
   Future<void> saveLogin(LoginModel login) async {
@@ -107,5 +109,27 @@ class StorageService {
     } catch (e) {
       return NotificationSettingsModel.defaultSettings();
     }
+  }
+
+  // Contexto selecionado
+  Future<void> saveSelectedContext(ContextoAluno contexto) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_selectedContextKey, jsonEncode(contexto.toJson()));
+  }
+
+  Future<ContextoAluno?> getSelectedContext() async {
+    final prefs = await SharedPreferences.getInstance();
+    final s = prefs.getString(_selectedContextKey);
+    if (s == null) return null;
+    try {
+      return ContextoAluno.fromJson(jsonDecode(s) as Map<String, dynamic>);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future<void> removeSelectedContext() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_selectedContextKey);
   }
 }

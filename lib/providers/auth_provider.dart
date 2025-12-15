@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import '../models/login_model.dart';
+import '../models/contexto_aluno.dart';
 import '../services/api_factory.dart';
 import '../services/api_interface.dart';
 import '../services/storage_service.dart';
@@ -48,16 +49,11 @@ class AuthProvider with ChangeNotifier {
     try {
       final loginData = LoginModel(cpf: cpf, senha: senha);
       await _storageService.saveLogin(loginData);
-      
-      final cookie = await apiService.login(loginData);
-      final cookieModel = CookieModel(
-        cookie: cookie,
-        dataCriacao: DateTime.now(),
-      );
-      
-      await _storageService.saveCookie(cookieModel);
-      
-      _isLoggedIn = true;
+
+      // Apenas autentica (parcela inicial). Seleção de contexto é feita separadamente.
+      await apiService.autenticar(loginData);
+
+      _isLoggedIn = true; // permite navegar para a Home onde será escolhido o contexto
       _isLoading = false;
       notifyListeners();
       return true;
@@ -71,6 +67,7 @@ class AuthProvider with ChangeNotifier {
   
   Future<void> logout() async {
     await _storageService.removeCookie();
+    await _storageService.removeSelectedContext();
     _isLoggedIn = false;
     notifyListeners();
   }
@@ -78,22 +75,65 @@ class AuthProvider with ChangeNotifier {
   // Obter o serviço de API atual
   ApiInterface get apiService => _apiFactory.getApi();
 
+  Future<List<ContextoAluno>> fetchContextos() async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      print('[AuthProvider] fetchContextos() called');
+      final list = await apiService.buscarContextos();
+      print('[AuthProvider] fetchContextos() returned ${list.length} items');
+      _isLoading = false;
+      notifyListeners();
+      return list;
+    } catch (e) {
+      print('[AuthProvider] fetchContextos() error: $e');
+      _error = e.toString();
+      _isLoading = false;
+      notifyListeners();
+      rethrow;
+    }
+  }
+
+  Future<bool> selecionarContexto(ContextoAluno ctx) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+      try {
+        final cookie = await apiService.selecionarContexto(ctx);
+        // salva o contexto selecionado para pular a seleção futura
+        await _storageService.saveSelectedContext(ctx);
+        final cookieModel = CookieModel(cookie: cookie, dataCriacao: DateTime.now());
+        await _storageService.saveCookie(cookieModel);
+
+      _isLoggedIn = true;
+      _isLoading = false;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _error = e.toString();
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    }
+  }
+
   Future<String?> getCookie() async {
     final cookie = await _storageService.getCookie();
     if (cookie != null && cookie.isValid()) {
       return cookie.cookie;
     }
-    
-    // Se o cookie não for válido, tenta fazer login novamente
+    // Se o cookie não for válido, tenta usar contexto salvo + credenciais
+    final savedContext = await _storageService.getSelectedContext();
     final login = await _storageService.getLogin();
-    if (login != null) {
+
+    if (savedContext != null && login != null) {
       try {
-        final newCookie = await apiService.login(login);
-        final cookieModel = CookieModel(
-          cookie: newCookie,
-          dataCriacao: DateTime.now(),
-        );
-        
+        await apiService.autenticar(login);
+        final newCookie = await apiService.selecionarContexto(savedContext);
+        final cookieModel = CookieModel(cookie: newCookie, dataCriacao: DateTime.now());
         await _storageService.saveCookie(cookieModel);
         return newCookie;
       } catch (e) {
@@ -103,7 +143,8 @@ class AuthProvider with ChangeNotifier {
         return null;
       }
     }
-    
+
+    // Sem cookie salvo e sem contexto salvo, não tentar seleção automática
     return null;
   }
 }

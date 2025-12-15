@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import 'settings_screen.dart';
+import 'home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -37,6 +38,12 @@ class _LoginScreenState extends State<LoginScreen> {
             content: Text(authProvider.error ?? 'Erro ao fazer login'),
             backgroundColor: Colors.red,
           ),
+        );
+      } else if (success && mounted) {
+        // Navega para a Home; a seleção de contexto acontece lá se necessário
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const HomeScreen()),
         );
       }
     }

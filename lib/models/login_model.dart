@@ -47,7 +47,7 @@ class CookieModel {
 
   bool isValid() {
     final agora = DateTime.now();
-    final limite = dataCriacao.add(const Duration(minutes: 35));
+    final limite = dataCriacao.add(const Duration(minutes: 5));
     return agora.isBefore(limite);
   }
 }

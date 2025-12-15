@@ -27,13 +27,16 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProxyProvider<AuthProvider, DataProvider>(
           create: (context) => DataProvider(Provider.of<AuthProvider>(context, listen: false)),
-          update: (context, auth, previous) => DataProvider(auth),
+          // Não recria o DataProvider a cada notificação do AuthProvider — retorna o anterior se existir.
+          update: (context, auth, previous) => previous ?? DataProvider(auth),
         ),
       ],
-      child: Consumer<AuthProvider>(
-        builder: (context, authProvider, _) {
+      child: Selector<AuthProvider, bool>(
+        selector: (_, auth) => auth.isLoggedIn,
+        builder: (context, isLoggedIn, _) {
+          final authProvider = Provider.of<AuthProvider>(context, listen: false);
           final appRouter = AppRouter(authProvider);
-          
+
           return MaterialApp.router(
             title: 'Faltas Scraper',
             theme: ThemeData(
