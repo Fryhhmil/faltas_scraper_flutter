@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="faltas_scraper_flutter"
+        android:label="Faltas iCEV"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
