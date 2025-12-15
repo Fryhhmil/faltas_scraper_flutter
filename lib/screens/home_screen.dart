@@ -4,6 +4,7 @@ import '../providers/data_provider.dart';
 import '../providers/auth_provider.dart';
 import '../models/contexto_aluno.dart';
 import '../models/falta_model.dart';
+import '../services/api_factory.dart';
 import 'settings_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -168,11 +169,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildTodayCard(dataProvider),
+                    // _buildTodayCard(dataProvider),
                     const SizedBox(height: 16),
                     _buildFaltasTable(dataProvider.faltas),
                     const SizedBox(height: 16),
-                    _buildProgressBars(dataProvider.faltas),
+                    // _buildProgressBars(dataProvider.faltas),
                   ],
                 ),
               ),
@@ -192,127 +193,127 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildTodayCard(DataProvider dataProvider) {
-    final diaHoje = dataProvider.getDiaAtual();
-    final materiasHoje = dataProvider.getMateriasHoje();
-    final faltasRestantes = dataProvider.getFaltasRestantesHoje();
+  // Widget _buildTodayCard(DataProvider dataProvider) {
+  //   final diaHoje = dataProvider.getDiaAtual();
+  //   final materiasHoje = dataProvider.getMateriasHoje();
+  //   final faltasRestantes = dataProvider.getFaltasRestantesHoje();
 
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  diaHoje,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const Text(
-                  'Aulas de hoje',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey,
-                  ),
-                ),
-              ],
-            ),
-            const Divider(),
-            const SizedBox(height: 8),
-            RichText(
-              text: TextSpan(
-                style: const TextStyle(color: Colors.black),
-                children: [
-                  const TextSpan(
-                    text: '📚 ',
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  const TextSpan(
-                    text: 'Matérias: ',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  TextSpan(
-                    text: materiasHoje,
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 8),
-            if (faltasRestantes.isEmpty) ...[
-              const Center(
-                child: Text(
-                  'Nenhuma matéria com aulas hoje',
-                  style: TextStyle(color: Colors.grey),
-                ),
-              ),
-            ] else ...[
-              Column(
-                children: [
-                  if (faltasRestantes.isNotEmpty) ...[
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 8.0),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: const Text(
-                              'Matéria',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          const Text(
-                            'Faltas Restantes',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    ...faltasRestantes.map((falta) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8.0),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              '${falta['materia']}',
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          Text(
-                            'Restam ${falta['faltasRestantes']} de ${falta['podeFaltar']}',
-                            style: TextStyle(
-                              color: dataProvider.getStatusColor(falta['percentual']),
-                            ),
-                          ),
-                        ],
-                      ),
-                    )).toList(),
-                  ]
-                ],
-              ),
-            ]
-          ],
-        ),
-      ),
-    );
-  }
+  //   return Card(
+  //     elevation: 4,
+  //     shape: RoundedRectangleBorder(
+  //       borderRadius: BorderRadius.circular(12),
+  //     ),
+  //     child: Padding(
+  //       padding: const EdgeInsets.all(16.0),
+  //       child: Column(
+  //         crossAxisAlignment: CrossAxisAlignment.start,
+  //         children: [
+  //           Row(
+  //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //             children: [
+  //               Text(
+  //                 diaHoje,
+  //                 style: const TextStyle(
+  //                   fontSize: 20,
+  //                   fontWeight: FontWeight.bold,
+  //                 ),
+  //               ),
+  //               const Text(
+  //                 'Aulas de hoje',
+  //                 style: TextStyle(
+  //                   fontSize: 16,
+  //                   color: Colors.grey,
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //           const Divider(),
+  //           const SizedBox(height: 8),
+  //           RichText(
+  //             text: TextSpan(
+  //               style: const TextStyle(color: Colors.black),
+  //               children: [
+  //                 const TextSpan(
+  //                   text: '📚 ',
+  //                   style: const TextStyle(fontSize: 16),
+  //                 ),
+  //                 const TextSpan(
+  //                   text: 'Matérias: ',
+  //                   style: const TextStyle(
+  //                     fontSize: 16,
+  //                     fontWeight: FontWeight.bold,
+  //                   ),
+  //                 ),
+  //                 TextSpan(
+  //                   text: materiasHoje,
+  //                   style: const TextStyle(fontSize: 16),
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //           const SizedBox(height: 8),
+  //           if (faltasRestantes.isEmpty) ...[
+  //             const Center(
+  //               child: Text(
+  //                 'Nenhuma matéria com aulas hoje',
+  //                 style: TextStyle(color: Colors.grey),
+  //               ),
+  //             ),
+  //           ] else ...[
+  //             Column(
+  //               children: [
+  //                 if (faltasRestantes.isNotEmpty) ...[
+  //                   Padding(
+  //                     padding: const EdgeInsets.only(bottom: 8.0),
+  //                     child: Row(
+  //                       children: [
+  //                         Expanded(
+  //                           child: const Text(
+  //                             'Matéria',
+  //                             style: TextStyle(
+  //                               fontWeight: FontWeight.bold,
+  //                             ),
+  //                           ),
+  //                         ),
+  //                         const Text(
+  //                           'Faltas Restantes',
+  //                           style: TextStyle(
+  //                             fontWeight: FontWeight.bold,
+  //                           ),
+  //                         ),
+  //                       ],
+  //                     ),
+  //                   ),
+  //                   ...faltasRestantes.map((falta) => Padding(
+  //                     padding: const EdgeInsets.only(bottom: 8.0),
+  //                     child: Row(
+  //                       children: [
+  //                         Expanded(
+  //                           child: Text(
+  //                             '${falta['materia']}',
+  //                             style: const TextStyle(
+  //                               fontWeight: FontWeight.bold,
+  //                             ),
+  //                           ),
+  //                         ),
+  //                         Text(
+  //                           'Restam ${falta['faltasRestantes']} de ${falta['podeFaltar']}',
+  //                           style: TextStyle(
+  //                             color: dataProvider.getStatusColor(falta['percentual']),
+  //                           ),
+  //                         ),
+  //                       ],
+  //                     ),
+  //                   )).toList(),
+  //                 ]
+  //               ],
+  //             ),
+  //           ]
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
 
 
@@ -386,7 +387,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 Expanded(
                   child: Text(
-                    'Restam',
+                    'Maximo',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
@@ -435,13 +436,19 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   Expanded(
                     child: Text(
-                      falta.faltas.toString(),
+                      (falta.faltas! / 2).truncate().toString(),
                       textAlign: TextAlign.center,
                     ),
                   ),
                   Expanded(
                     child: Text(
-                      falta.podeFaltar.toString(),
+                      ApiFactory()
+                          .getApi()
+                          .calcularLimiteDeFaltas(
+                            faltas: falta.faltas,
+                            porcentagem: falta.percentual,
+                          )
+                          .toString(),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -460,119 +467,119 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildProgressBars(List<FaltaModel> faltas) {
-    if (faltas.isEmpty) {
-      return const Center(
-        child: Text(
-          'Nenhuma falta registrada',
-          style: TextStyle(color: Colors.grey),
-        ),
-      );
-    }
+  // Widget _buildProgressBars(List<FaltaModel> faltas) {
+  //   if (faltas.isEmpty) {
+  //     return const Center(
+  //       child: Text(
+  //         'Nenhuma falta registrada',
+  //         style: TextStyle(color: Colors.grey),
+  //       ),
+  //     );
+  //   }
 
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor.withOpacity(0.1),
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(12),
-                topRight: Radius.circular(12),
-              ),
-            ),
-            child: Row(
-              children: [
-                const Icon(Icons.bar_chart, color: Colors.blue),
-                const SizedBox(width: 8),
-                const Text(
-                  'Progresso das Faltas',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-          ),
+  //   return Card(
+  //     elevation: 4,
+  //     shape: RoundedRectangleBorder(
+  //       borderRadius: BorderRadius.circular(12),
+  //     ),
+  //     child: Column(
+  //       children: [
+  //         Container(
+  //           padding: const EdgeInsets.all(16),
+  //           decoration: BoxDecoration(
+  //             color: Theme.of(context).primaryColor.withOpacity(0.1),
+  //             borderRadius: const BorderRadius.only(
+  //               topLeft: Radius.circular(12),
+  //               topRight: Radius.circular(12),
+  //             ),
+  //           ),
+  //           child: Row(
+  //             children: [
+  //               const Icon(Icons.bar_chart, color: Colors.blue),
+  //               const SizedBox(width: 8),
+  //               const Text(
+  //                 'Progresso das Faltas',
+  //                 style: TextStyle(
+  //                   fontSize: 18,
+  //                   fontWeight: FontWeight.bold,
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //         ),
 
-          // Linhas separadoras
-          Container(
-            color: Colors.grey[200],
-            height: 1,
-            margin: const EdgeInsets.symmetric(horizontal: 16),
-          ),
+  //         // Linhas separadoras
+  //         Container(
+  //           color: Colors.grey[200],
+  //           height: 1,
+  //           margin: const EdgeInsets.symmetric(horizontal: 16),
+  //         ),
 
-          // Barras de progresso
-          ...faltas.map((falta) => Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.grey[50],
-                borderRadius: BorderRadius.circular(8),
-              ),
-              padding: const EdgeInsets.all(12),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          falta.nomeMateria,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Container(
-                    width: 100,
-                    height: 10,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      color: Colors.grey[200],
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(5),
-                      child: LinearProgressIndicator(
-                        value: (falta.percentual >= 25) ? 1.0 : (falta.percentual / 25),
-                        backgroundColor: Colors.transparent,
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          _getColorForPercentage(falta.percentual),
-                        ),
-                        minHeight: 10,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    '${(falta.percentual >= 25 ? 100 : (falta.percentual / 25 * 100)).toStringAsFixed(1)}%',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          )),
-        ],
-      ),
-    );
-  }
+  //         // Barras de progresso
+  //         ...faltas.map((falta) => Padding(
+  //           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+  //           child: Container(
+  //             decoration: BoxDecoration(
+  //               color: Colors.grey[50],
+  //               borderRadius: BorderRadius.circular(8),
+  //             ),
+  //             padding: const EdgeInsets.all(12),
+  //             child: Row(
+  //               children: [
+  //                 Expanded(
+  //                   child: Column(
+  //                     crossAxisAlignment: CrossAxisAlignment.start,
+  //                     children: [
+  //                       Text(
+  //                         falta.nomeMateria,
+  //                         style: const TextStyle(
+  //                           fontWeight: FontWeight.bold,
+  //                           fontSize: 16,
+  //                         ),
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ),
+  //                 const SizedBox(width: 16),
+  //                 Container(
+  //                   width: 100,
+  //                   height: 10,
+  //                   decoration: BoxDecoration(
+  //                     borderRadius: BorderRadius.circular(5),
+  //                     color: Colors.grey[200],
+  //                   ),
+  //                   child: ClipRRect(
+  //                     borderRadius: BorderRadius.circular(5),
+  //                     child: LinearProgressIndicator(
+  //                       value: (falta.percentual >= 25) ? 1.0 : (falta.percentual / 25),
+  //                       backgroundColor: Colors.transparent,
+  //                       valueColor: AlwaysStoppedAnimation<Color>(
+  //                         _getColorForPercentage(falta.percentual),
+  //                       ),
+  //                       minHeight: 10,
+  //                     ),
+  //                   ),
+  //                 ),
+  //                 const SizedBox(width: 8),
+  //                 Text(
+  //                   '${(falta.percentual >= 25 ? 100 : (falta.percentual / 25 * 100)).toStringAsFixed(1)}%',
+  //                   style: TextStyle(
+  //                     fontSize: 14,
+  //                     fontWeight: FontWeight.bold,
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //         )),
+  //       ],
+  //     ),
+  //   );
+  // }
 
-  Color _getColorForPercentage(double percentage) {
-    if (percentage >= 25) return Colors.red;          
-    if (percentage >= 10) return Colors.orange; 
-    return Colors.amber[600]!;          
-  }
+  // Color _getColorForPercentage(double percentage) {
+  //   if (percentage >= 25) return Colors.red;          
+  //   if (percentage >= 10) return Colors.orange; 
+  //   return Colors.amber[600]!;          
+  // }
 }

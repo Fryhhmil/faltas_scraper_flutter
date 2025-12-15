@@ -15,4 +15,10 @@ abstract class ApiInterface {
 
   Future<List<FaltaModel>> buscarFaltas(String cookie);
   Future<HorarioAlunoModel> buscarHorario(String cookie);
+
+  /// Calcula o limite de faltas permitidas a partir das faltas atuais e porcentagem
+  int calcularLimiteDeFaltas({
+    int? faltas,
+    double? porcentagem,
+  });
 }

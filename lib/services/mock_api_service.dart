@@ -85,4 +85,12 @@ class MockApiService implements ApiInterface {
       throw Exception('Cookie inválido');
     }
   }
+
+  @override
+  int calcularLimiteDeFaltas({int? faltas, double? porcentagem}) {
+    if (faltas == null || porcentagem == null) return 0;
+    if (faltas == 0 || porcentagem == 0) return 0;
+    final double resultado = (faltas * 25) / porcentagem;
+    return resultado.ceil();
+  }
 }

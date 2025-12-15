@@ -239,4 +239,28 @@ class ApiService implements ApiInterface {
       throw Exception('Falha ao buscar horário: ${response.statusCode}');
     }
   }
+
+  int calcularLimiteDeFaltas({
+    int? faltas,
+    double? porcentagem,
+  }) {
+    if (faltas == null || porcentagem == null) return 0;
+    if (faltas == 0 || porcentagem == 0) return 0;
+    faltas = (faltas! / 2).truncate();
+
+    // Regra de 3
+    final double resultado = (faltas * 25) / porcentagem;
+
+    final int parteInteira = resultado.floor();
+    final double parteDecimal = resultado - parteInteira;
+
+    // Só arredonda para cima se decimal > 0.7
+    if (parteDecimal > 0.7) {
+      return parteInteira + 1;
+    }
+
+    return parteInteira;
+  }
+
+
 }
