@@ -2,7 +2,7 @@ name: faltas_scraper_flutter
 description: "Aplicativo de controle de faltas em Flutter."
 publish_to: 'none'
 
-version: 1.0.0+1
+version: 2.0.0+2
 
 environment:
   sdk: '>=3.3.4 <4.0.0'
