@@ -6,8 +6,9 @@ import '../models/nota_disciplina.dart';
 import '../models/falta_disciplina.dart';
 import '../models/disciplina.dart';
 import '../models/aula_horario.dart';
+import '../repositories/academic_repository.dart';
 
-class RmApiDataSource {
+class RmApiDataSource implements AcademicApi {
   final DioClient _client;
   RmApiDataSource(this._client);
   Dio get _dio => _client.dio;
