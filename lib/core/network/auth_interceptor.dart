@@ -36,6 +36,11 @@ class AuthInterceptor extends Interceptor {
     if (response.requestOptions.path.contains('EduPortalAlunoLogin')) {
       return handler.next(response);
     }
+    // Já tentamos refresh+retry uma vez para esta requisição: não repetir
+    // (evita loop infinito caso a sessão continue expirada após o retry).
+    if (response.requestOptions.extra['auth_retried'] == true) {
+      return handler.next(response);
+    }
     final ok = await runRefresh();
     if (!ok) {
       return handler.reject(DioException(
@@ -44,6 +49,7 @@ class AuthInterceptor extends Interceptor {
       ));
     }
     try {
+      response.requestOptions.extra['auth_retried'] = true;
       final retried = await retry(response.requestOptions);
       return handler.resolve(retried);
     } catch (e) {
