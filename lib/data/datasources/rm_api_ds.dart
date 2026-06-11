@@ -20,6 +20,7 @@ class RmApiDataSource implements AcademicApi {
     return const [];
   }
 
+  @override
   Future<List<NotaDisciplina>> notas() async {
     final r = await _dio.get(Endpoints.notaEtapa);
     if (r.statusCode != 200) throw ApiException('Notas', statusCode: r.statusCode);
@@ -28,6 +29,7 @@ class RmApiDataSource implements AcademicApi {
         .toList();
   }
 
+  @override
   Future<List<FaltaDisciplina>> faltas() async {
     final r = await _dio.get(Endpoints.faltaEtapa);
     if (r.statusCode != 200) throw ApiException('Faltas', statusCode: r.statusCode);
@@ -36,6 +38,7 @@ class RmApiDataSource implements AcademicApi {
         .toList();
   }
 
+  @override
   Future<List<Disciplina>> disciplinas() async {
     final r = await _dio.get(Endpoints.disciplinas);
     if (r.statusCode != 200) throw ApiException('Disciplinas', statusCode: r.statusCode);
@@ -44,6 +47,7 @@ class RmApiDataSource implements AcademicApi {
         .toList();
   }
 
+  @override
   Future<List<AulaHorario>> horario() async {
     final r = await _dio.get(Endpoints.quadroHorario);
     if (r.statusCode != 200) throw ApiException('Horário', statusCode: r.statusCode);
