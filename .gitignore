@@ -50,3 +50,5 @@ app.*.map.json
 **/*.lock
 !pubspec.lock
 *.lock
+# Brainstorming visual companion
+.superpowers/
