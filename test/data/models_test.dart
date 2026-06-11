@@ -66,4 +66,27 @@ void main() {
     expect(f.percentualLimite, 100);
     expect(f.nivel, NivelFalta.critico);
   });
+
+  test('FaltaDisciplina deriva carga via regra de 3 quando cargaHoraria=0', () {
+    // 5 faltas = 25% → carga derivada = 5/(0.25) = 20 → max = 20*0.25 = 5
+    final f = FaltaDisciplina(
+      disciplina: 'X',
+      faltas: 5,
+      percentualApi: 25,
+    );
+    expect(f.maxFaltas, 5);
+    expect(f.percentualLimite, 100);
+    expect(f.nivel, NivelFalta.critico);
+  });
+
+  test('FaltaDisciplina descarta carga derivada absurda (guarda de plausibilidade)', () {
+    // 1 falta = 0.01% → carga derivada = 1/(0.0001) = 10000 → guardado para 0
+    final f = FaltaDisciplina(
+      disciplina: 'X',
+      faltas: 1,
+      percentualApi: 0.01,
+    );
+    expect(f.maxFaltas, 0);
+    expect(f.percentualLimite, 0);
+  });
 }

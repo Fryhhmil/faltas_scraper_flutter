@@ -17,8 +17,11 @@ class FaltaDisciplina {
   int get maxFaltas {
     if (cargaHoraria > 0) return (cargaHoraria * 0.25).floor();
     // Deriva via regra de 3 a partir do percentual informado pela API.
+    // percentualApi! > 0 evita divisão por zero e o caso sem sentido de 0%.
     if (percentualApi != null && percentualApi! > 0 && faltas > 0) {
       final carga = (faltas / (percentualApi! / 100));
+      // Guarda de plausibilidade: descarta cargas absurdas/derivadas de erro.
+      if (!carga.isFinite || carga > 1000) return 0;
       return (carga * 0.25).floor();
     }
     return 0;
