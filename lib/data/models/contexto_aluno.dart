@@ -24,25 +24,25 @@ class ContextoAluno {
   });
 
   factory ContextoAluno.fromJson(Map<String, dynamic> json) {
-    int _asInt(dynamic v) {
+    int asInt(dynamic v) {
       if (v == null) return 0;
       if (v is int) return v;
       return int.tryParse(v.toString()) ?? 0;
     }
 
-    String _asString(dynamic v) => v == null ? '' : v.toString();
+    String asString(dynamic v) => v == null ? '' : v.toString();
 
     return ContextoAluno(
-      codColigada: _asInt(json['CODCOLIGADA']),
-      codFilial: _asInt(json['CODFILIAL']),
-      codTipoCurso: _asInt(json['CODTIPOCURSO']),
-      idContextoAluno: _asString(json['IDCONTEXTOALUNO']),
-      idHabilitacaoFilial: _asInt(json['IDHABILITACAOFILIAL']),
-      idPerlet: _asInt(json['IDPERLET']),
-      ra: _asString(json['RA']),
-      nomeCurso: _asString(json['NOMECURSO']),
-      nomePeriodo: _asString(json['CODPERLET']),
-      nomeTurno: _asString(json['NOMETURNO']),
+      codColigada: asInt(json['CODCOLIGADA']),
+      codFilial: asInt(json['CODFILIAL']),
+      codTipoCurso: asInt(json['CODTIPOCURSO']),
+      idContextoAluno: asString(json['IDCONTEXTOALUNO']),
+      idHabilitacaoFilial: asInt(json['IDHABILITACAOFILIAL']),
+      idPerlet: asInt(json['IDPERLET']),
+      ra: asString(json['RA']),
+      nomeCurso: asString(json['NOMECURSO']),
+      nomePeriodo: asString(json['CODPERLET']),
+      nomeTurno: asString(json['NOMETURNO']),
     );
   }
 
