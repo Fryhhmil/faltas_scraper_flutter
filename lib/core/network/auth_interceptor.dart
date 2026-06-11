@@ -32,6 +32,12 @@ class AuthInterceptor extends Interceptor {
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) async {
     if (!isExpired(response)) return handler.next(response);
+    // Requisições do próprio fluxo de autenticação não devem disparar refresh
+    // (o refresh É o login — evita interferência durante o login e deadlock
+    // de refresh-dentro-do-refresh).
+    if (response.requestOptions.extra['skip_auth_refresh'] == true) {
+      return handler.next(response);
+    }
     // Não tentar recuperar a própria rota de login.
     if (response.requestOptions.path.contains('EduPortalAlunoLogin')) {
       return handler.next(response);

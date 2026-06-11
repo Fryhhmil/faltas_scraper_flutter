@@ -45,6 +45,9 @@ class AuthRepository {
     }
   }
 
+  // Marca requisições do fluxo de auth para o AuthInterceptor não disparar refresh.
+  static const _skipAuth = {'skip_auth_refresh': true};
+
   Future<void> _autenticar(Credenciais cred) async {
     final resp = await _dio.post(
       Endpoints.login,
@@ -54,6 +57,7 @@ class AuthRepository {
         contentType: 'application/x-www-form-urlencoded',
         followRedirects: false,
         validateStatus: (s) => s != null && s < 500,
+        extra: _skipAuth,
       ),
     );
     if (resp.statusCode != 302) {
@@ -63,11 +67,13 @@ class AuthRepository {
     final keyIdx = location.indexOf('key=');
     if (keyIdx < 0) throw const ApiException('Key de login não encontrada');
     final key = location.substring(keyIdx + 4);
-    await _dio.get('${Endpoints.autoLogin}?key=$key');
+    await _dio.get('${Endpoints.autoLogin}?key=$key',
+        options: Options(extra: _skipAuth));
   }
 
   Future<List<ContextoAluno>> buscarContextos() async {
-    final resp = await _dio.get(Endpoints.contexto);
+    final resp =
+        await _dio.get(Endpoints.contexto, options: Options(extra: _skipAuth));
     final data = (resp.data is Map) ? resp.data['data'] as List? : null;
     if (data == null) return [];
     return data
@@ -89,7 +95,10 @@ class AuthRepository {
         'AcessoDadosAcademicos': true,
         'AcessoDadosFinanceiros': true,
       },
-      options: Options(contentType: 'application/json;charset=UTF-8'),
+      options: Options(
+        contentType: 'application/json;charset=UTF-8',
+        extra: _skipAuth,
+      ),
     );
     await _saveContexto(ctx);
   }
