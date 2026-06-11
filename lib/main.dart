@@ -1,60 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:device_preview/device_preview.dart';
+import 'app.dart';
+import 'core/network/dio_client.dart';
+import 'data/datasources/secure_storage_ds.dart';
+import 'data/datasources/rm_api_ds.dart';
+import 'data/repositories/auth_repository.dart';
+import 'data/repositories/academic_repository.dart';
 
-import 'providers/auth_provider.dart';
-import 'providers/data_provider.dart';
-import 'routes.dart';
-
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
-  runApp(
-    DevicePreview(
-      enabled: !const bool.fromEnvironment('dart.vm.product'),
-      builder: (context) => const MyApp(),
-    ),
-  );
-}
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final client = await DioClient.create();
+  final storage = SecureStorageDataSource();
+  final authRepo = AuthRepository(client, storage);
 
-  @override
-  Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => AuthProvider()),
-        ChangeNotifierProxyProvider<AuthProvider, DataProvider>(
-          create: (context) => DataProvider(Provider.of<AuthProvider>(context, listen: false)),
-          // Não recria o DataProvider a cada notificação do AuthProvider — retorna o anterior se existir.
-          update: (context, auth, previous) => previous ?? DataProvider(auth),
-        ),
-      ],
-      child: Selector<AuthProvider, bool>(
-        selector: (_, auth) => auth.isLoggedIn,
-        builder: (context, isLoggedIn, _) {
-          final authProvider = Provider.of<AuthProvider>(context, listen: false);
-          final appRouter = AppRouter(authProvider);
+  // Liga o interceptor de sessão: ao expirar, re-loga e reexecuta.
+  client.attachAuth(authRepo.refreshSession);
 
-          return MaterialApp.router(
-            title: 'Faltas Scraper',
-            theme: ThemeData(
-              primarySwatch: Colors.blue,
-              useMaterial3: true,
-              appBarTheme: const AppBarTheme(
-                backgroundColor: Colors.blue,
-                foregroundColor: Colors.white,
-                elevation: 0,
-              ),
-            ),
-            routerConfig: appRouter.router,
-            debugShowCheckedModeBanner: false,
-            locale: DevicePreview.locale(context),
-            builder: (context, child) => child!,
-          );
-        },
-      ),
-    );
-  }
+  final academicRepo = AcademicRepository(RmApiDataSource(client));
+
+  runApp(App(authRepo: authRepo, academicRepo: academicRepo));
 }
