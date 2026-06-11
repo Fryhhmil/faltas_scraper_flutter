@@ -29,13 +29,6 @@ dependencies:
   
   # Formatação
   intl: 0.20.2
-  
-  # Notificações e agendamento
-  android_alarm_manager_plus: ^4.0.7
-  timezone: ^0.10.1
-  
-  # Device Preview
-  device_preview: ^1.0.1
 
   dio: ^5.7.0
   cookie_jar: ^4.0.8
