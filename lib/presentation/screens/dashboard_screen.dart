@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../core/theme/app_colors.dart';
-import '../../data/models/aula_horario.dart';
 import '../providers/academic_provider.dart';
 import '../widgets/ring_gauge.dart';
 import '../widgets/skeleton.dart';
