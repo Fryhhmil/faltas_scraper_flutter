@@ -8,34 +8,46 @@ Future<ContextoAluno?> showPeriodSheet(
   return showModalBottomSheet<ContextoAluno>(
     context: context,
     backgroundColor: AppColors.card,
+    isScrollControlled: true,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
     ),
     builder: (ctx) => SafeArea(
-      child: Column(mainAxisSize: MainAxisSize.min, children: [
-        const Padding(
-          padding: EdgeInsets.all(16),
-          child: Text('Selecione o período',
-              style: TextStyle(
-                  color: AppColors.text,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold)),
+      child: ConstrainedBox(
+        // Limita a altura para caber em telas pequenas; a lista rola.
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(ctx).size.height * 0.7,
         ),
-        ...contextos.map((c) {
-          final sel = c.idContextoAluno == atual?.idContextoAluno;
-          return ListTile(
-            title: Text(c.nomeCurso,
-                style: const TextStyle(color: AppColors.text)),
-            subtitle: Text('${c.nomePeriodo} · ${c.nomeTurno}',
-                style: const TextStyle(color: AppColors.text2)),
-            trailing: sel
-                ? const Icon(Icons.check_circle, color: AppColors.accent)
-                : null,
-            onTap: () => Navigator.pop(ctx, c),
-          );
-        }),
-        const SizedBox(height: 8),
-      ]),
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          const Padding(
+            padding: EdgeInsets.all(16),
+            child: Text('Selecione o período',
+                style: TextStyle(
+                    color: AppColors.text,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold)),
+          ),
+          Flexible(
+            child: ListView(
+              shrinkWrap: true,
+              children: contextos.map((c) {
+                final sel = c.idContextoAluno == atual?.idContextoAluno;
+                return ListTile(
+                  title: Text(c.nomeCurso,
+                      style: const TextStyle(color: AppColors.text)),
+                  subtitle: Text('${c.nomePeriodo} · ${c.nomeTurno}',
+                      style: const TextStyle(color: AppColors.text2)),
+                  trailing: sel
+                      ? const Icon(Icons.check_circle, color: AppColors.accent)
+                      : null,
+                  onTap: () => Navigator.pop(ctx, c),
+                );
+              }).toList(),
+            ),
+          ),
+          const SizedBox(height: 8),
+        ]),
+      ),
     ),
   );
 }
